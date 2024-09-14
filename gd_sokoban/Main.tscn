@@ -55,6 +55,9 @@ offset_bottom = 218.0
 theme = ExtResource("3")
 text = "REDO"
 
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+volume_db = 24.0
+
 [connection signal="pressed" from="UILayer/ResetButton" to="." method="_on_ResetButton_pressed"]
 [connection signal="pressed" from="UILayer/UndoButton" to="." method="_on_undo_button_pressed"]
 [connection signal="pressed" from="UILayer/RedoButton" to="." method="_on_RedoButton_pressed"]

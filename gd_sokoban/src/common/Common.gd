@@ -160,6 +160,20 @@ func count_redo() -> int:
 ## redoを実行する.
 func redo() -> void:
 	_replay_mgr.redo(_player)
+	
+
+## 指定の効果音を再生する
+var _audio_stream_player
+
+func set_audio_stream_player(node):
+	_audio_stream_player = node
+
+func play_sound(sound):
+	_audio_stream_player.stop()
+	var path = "res://assets/sounds/%s.ogg"%sound
+	_audio_stream_player.stream = load(path)
+	_audio_stream_player.play()
+
 # ---------------------------------------
 # private functions.
 # ---------------------------------------

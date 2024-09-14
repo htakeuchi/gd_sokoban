@@ -1,17 +1,26 @@
-.DS_Store
+# Godot 4+ specific ignores
+.godot/
 
 # Godot-specific ignores
 .import/
 export.cfg
 export_presets.cfg
-.godot/
-*.import
-*.avi
-*.mov
+# Dummy HTML5 export presets file for continuous integration
+!.github/dist/export_presets.cfg
+
+# Imported translations (automatically generated from CSV files)
+*.translation
 
 # Mono-specific ignores
 .mono/
 data_*/
+mono_crash.*.json
 
-# for macOS
+# System/tool-specific ignores
+.directory
 .DS_Store
+*~
+*.blend1
+
+# Jetbrains IDE files
+.idea/

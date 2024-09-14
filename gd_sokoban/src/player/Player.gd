@@ -60,7 +60,7 @@ func _move() -> void:
 	# 移動方向.
 	var d = Direction.get_point(_dir)
 	next.iadd(d)
-	
+
 	if Field.is_crate(next.x, next.y):
 		# 移動先が荷物.
 		if Field.can_move_crate(next.x, next.y, d.x, d.y):
@@ -69,12 +69,20 @@ func _move() -> void:
 			Field.move_crate(next.x, next.y, d.x, d.y)
 			# プレイヤーも動かす.
 			set_pos(next.x, next.y, true)
+
+			match Field.get_cell(next.x + d.y, next.y + d.y):
+				Field.eTile.NONE:
+					Common.play_sound("move")
+				_:
+					Common.play_sound("set")
 		
 			# リプレイデータを追加.
 			_add_replay(now, prev_dir, next, _dir)
 	elif Field.can_move(next.x, next.y):
 		# 移動可能.
 		set_pos(next.x, next.y, true)
+
+		Common.play_sound("move")
 		
 		# リプレイデータを追加.
 		_add_replay(now, prev_dir, next, Direction.eType.NONE)

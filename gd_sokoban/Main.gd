@@ -46,6 +46,8 @@ var _state = eState.MAIN # 状態.
 func _ready() -> void:
 	DisplayServer.window_set_size(Vector2i(1024*2, 600*2))
 	
+	Common.set_audio_stream_player($AudioStreamPlayer2D)
+
 	# UIをいったん非表示にする.
 	_ui_caption.visible = false
 	_ui_step.visible = false
@@ -76,7 +78,7 @@ func _ready() -> void:
 		push_warning("プレイヤーの開始位置が設定されていません.")
 		var p = Field.search_random_none()
 		_create_player(p.x, p.y)
-	
+		
 	# 共通モジュールをセットアップする.
 	var layers = {
 		"crate": _crate_layer,
@@ -144,12 +146,14 @@ func _update_main(delta:float) -> void:
 		_ui_undo.visible = false
 		_ui_reset.visible = false
 		_state = eState.STAGE_CLEAR
+		Common.play_sound("clear")
 
 ## 更新 > ステージクリア.
 func _update_stage_clear() -> void:
 	# キャプションを表示する.
 	_ui_caption.visible = true
 	_ui_caption.text = "COMPLETED"
+
 	if Common.is_final_level():
 		_ui_caption.text = "ALL LEVELS COMPLETED!"
 	
