@@ -34,6 +34,7 @@ enum eState {
 @onready var _obj_layer = $ObjLayer
 @onready var _crate_layer = $CrateLayer
 
+@onready var _audio_steam_player = $AudioStreamPlayer2D
 # ---------------------------------------
 # vars.
 # ---------------------------------------
@@ -45,8 +46,7 @@ var _state = eState.MAIN # 状態.
 # ---------------------------------------
 func _ready() -> void:
 	DisplayServer.window_set_size(Vector2i(1024*2, 600*2))
-	
-	Common.set_audio_stream_player($AudioStreamPlayer2D)
+	Common.set_audio_stream_player(_audio_steam_player)
 
 	# UIをいったん非表示にする.
 	_ui_caption.visible = false
@@ -104,6 +104,7 @@ func _create_obj(i:int, j:int, id:int) -> bool:
 func _create_player(i:int, j:int) -> void:
 	_player = PlayerObj.instantiate()
 	_player.set_pos(i, j, true)
+#	_player.scale = Vector2(48, 48) / Vector2(64, 64) 
 	_obj_layer.add_child(_player)
 
 ## 荷物の生成.

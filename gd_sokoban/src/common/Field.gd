@@ -11,7 +11,7 @@ const Point2 = preload("res://src/common/Point2.gd")
 # ---------------------------------------
 # const.
 # ---------------------------------------
-const TILE_SIZE = 64.0
+const TILE_SIZE = 48.0
 
 const FIELD_OFS_X = 0
 const FIELD_OFS_Y = 0

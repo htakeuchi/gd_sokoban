@@ -47,9 +47,9 @@ def save_level_as_json(number, level_data)
       when '.' then 'goal'
       when '@' then 'player'
       when '$' then 'box'
-      else nil  # 不明なキャラクターは無視
+      else nil
       end
-    end.compact  # nil（無効なキャラクター）は削除
+    end.compact
   end
 
   File.open(file_name, 'w') do |f|
