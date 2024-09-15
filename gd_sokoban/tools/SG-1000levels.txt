@@ -302,7 +302,6 @@ Comment-End:
 Title: ROUND 016
 Author: SEGA
 Comment:
-プレイヤーがすっ転ぶ
 Comment-End:
 
        #######
@@ -1753,8 +1752,6 @@ Comment-End:
 Title: ROUND 088
 Author: SEGA
 Comment:
-ヘリコプターから荷物が投下されてプレイヤーが潰される
-Comment-End:
 
 #######
 # ....#
@@ -2093,7 +2090,6 @@ Comment-End:
 Title: ROUND ASAMI
 Author: SEGA
 Comment:
-これをクリアするとエンディング
 Comment-End:
 
 #########################

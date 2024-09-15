@@ -15,11 +15,12 @@ script = ExtResource("1")
 [node name="UILayer" type="CanvasLayer" parent="."]
 
 [node name="LabelCaption" type="Label" parent="UILayer"]
-offset_left = 328.0
+offset_left = 1.0
 offset_top = 160.0
-offset_right = 504.0
-offset_bottom = 189.0
+offset_right = 1024.0
+offset_bottom = 376.0
 theme = ExtResource("3")
+theme_override_font_sizes/font_size = 0
 text = "STAGE CLEAR"
 horizontal_alignment = 1
 
