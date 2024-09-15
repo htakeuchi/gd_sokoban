@@ -70,11 +70,10 @@ func _move() -> void:
 			# プレイヤーも動かす.
 			set_pos(next.x, next.y, true)
 
-			match Field.get_cell(next.x + d.y, next.y + d.y):
-				Field.eTile.NONE:
-					Common.play_sound("move")
-				_:
-					Common.play_sound("set")
+			if Field.get_cell(next.x + d.x, next.y + d.y) == Field.eTile.POINT1:
+				Common.play_sound("set")
+			else:
+				Common.play_sound("move")
 		
 			# リプレイデータを追加.
 			_add_replay(now, prev_dir, next, _dir)

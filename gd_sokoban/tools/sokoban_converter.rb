@@ -8,13 +8,13 @@ def parse_and_save_levels
   ARGF.each_line do |line|
     line = line.rstrip
 
-    next if line.empty? || line.start_with?(";") 
+    next if line.empty? || line.start_with?(";")
 
     if line.start_with?("Title:")
       process_level(level_number, current_level)
       current_level = []
       level_number += 1
-    elsif line.match(/^.+\:/) 
+    elsif line.match(/^.+\:/)
       next
     else
       current_level << line.chars
@@ -52,8 +52,14 @@ def save_level_as_json(number, level_data)
     end.compact
   end
 
+  # 行数と列数を計算
+  rows = converted_level.size
+  columns = converted_level.map(&:size).max
+
   File.open(file_name, 'w') do |f|
     json_data = {
+      rows: rows,
+      columns: columns,
       level: converted_level
     }
     f.write(JSON.pretty_generate(json_data))

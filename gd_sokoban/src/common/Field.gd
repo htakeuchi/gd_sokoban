@@ -15,8 +15,8 @@ const TILE_SIZE = 48.0
 
 const FIELD_OFS_X = 0
 const FIELD_OFS_Y = 0
-const TILE_WIDTH = 12
-const TILE_HEIGHT = 8
+const TILE_WIDTH = 31
+const TILE_HEIGHT = 22
 
 # ---------------------------------------
 # enum.

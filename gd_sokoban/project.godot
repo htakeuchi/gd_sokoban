@@ -23,8 +23,8 @@ Field="*res://src/common/Field.gd"
 
 [display]
 
-window/size/viewport_width=1024
-window/size/viewport_height=600
+window/size/viewport_width=1480
+window/size/viewport_height=1000
 window/stretch/mode="viewport"
 
 [editor]

@@ -9,6 +9,8 @@ extends Node2D
 const Point2 = preload("res://src/common/Point2.gd")
 const PlayerObj = preload("res://src/player/Player.tscn")
 const CrateObj = preload("res://src/crate/Crate.tscn")
+const BlockObj = preload("res://src/Block.tscn")
+const GoalObj = preload("res://src/Goal.tscn")
 
 # ---------------------------------------
 # const.
@@ -45,7 +47,7 @@ var _state = eState.MAIN # 状態.
 # private functions.
 # ---------------------------------------
 func _ready() -> void:
-	DisplayServer.window_set_size(Vector2i(1024*2, 600*2))
+	DisplayServer.window_set_size(Vector2i(1480, 1000))
 	Common.set_audio_stream_player(_audio_steam_player)
 
 	# UIをいったん非表示にする.
@@ -64,14 +66,42 @@ func _ready() -> void:
 	
 	# フィールドをセットアップする.
 	Field.setup(tile_front)
+	var file_path = "res://level/001.json"
+	if FileAccess.file_exists(file_path):
+		var file = FileAccess.open(file_path, FileAccess.READ)
+		var json_data = JSON.parse_string(file.get_as_text())
+		file.close()
 
-	# Frontタイルの情報からインスタンスを生成する.	
-	for j in range(Field.TILE_HEIGHT):
-		for i in range(Field.TILE_WIDTH):
-			var v = tile_front.get_cell_source_id(0, Vector2i(i, j))
-			if _create_obj(i, j, v):
-				# 生成したらタイルの情報は消しておく.
-				tile_front.set_cell(0, Vector2i(i, j), Field.eTile.NONE)
+		var rows = json_data.get("rows", 0)
+		var columns = json_data.get("columns", 0)
+		var level_data = json_data.get("level", [])
+		var x_offset = int((Field.TILE_WIDTH - columns) / 2)
+		var y_offset = int((Field.TILE_HEIGHT - rows) / 2)
+		
+		for y in range(rows):
+			for x in range(columns):
+				var field_type = null
+				match level_data[y][x]:
+					"wall":
+						field_type = Field.eTile.BLOCK
+#						var block =  BlockObj.instantiate()
+#						block.set_pos(x + x_offset, y + y_offset, true)
+#						_obj_layer.add_child(block)
+					"floor":
+						field_type = Field.eTile.BLANK
+					"goal":
+						field_type = Field.eTile.POINT1
+#						var goal =  GoalObj.instantiate()
+#						goal.set_pos(x + x_offset, y + y_offset, true)
+#						_obj_layer.add_child(goal)
+					"player":
+						field_type = Field.eTile.START
+					"box":
+						field_type = Field.eTile.CRATE1
+				tile_front.set_cell(0, Vector2i(x + x_offset, y + y_offset), field_type, Vector2i(0, 0))
+				if _create_obj(x + x_offset, y + y_offset, field_type):
+					tile_front.set_cell(0, Vector2i(x + x_offset, y + y_offset), Field.eTile.NONE)
+
 	
 	# スタート地点が未設定の場合はランダムな位置にプレイヤーを出現させる.
 	if _player == null:
@@ -104,7 +134,6 @@ func _create_obj(i:int, j:int, id:int) -> bool:
 func _create_player(i:int, j:int) -> void:
 	_player = PlayerObj.instantiate()
 	_player.set_pos(i, j, true)
-#	_player.scale = Vector2(48, 48) / Vector2(64, 64) 
 	_obj_layer.add_child(_player)
 
 ## 荷物の生成.
