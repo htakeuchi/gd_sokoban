@@ -15,6 +15,7 @@ const FIRST_LEVEL = 0
 # 最終レベル.
 const FINAL_LEVEL = 106
 
+const SAVE_DATA_PATH = "user://sokoban.dat"
 # ---------------------------------------
 # class.
 # ---------------------------------------
@@ -106,7 +107,7 @@ class ReplayMgr:
 var _player:Player = null
 var _layers = []
 var _replay_mgr = ReplayMgr.new()
-var _level = FIRST_LEVEL
+var _level
 
 # ---------------------------------------
 # public functions.
@@ -117,6 +118,8 @@ func reset_level() -> void:
 ## レベルを次に進める.
 func next_level() -> void:
 	_level += 1
+	Common.save_game()
+
 ## 最終レベルを終えたかどうか.
 func completed_all_level() -> bool:
 	return _level > FINAL_LEVEL
@@ -166,6 +169,28 @@ func play_sound(sound):
 	var path = "res://assets/sounds/%s.ogg"%sound
 	_audio_stream_player.stream = load(path)
 	_audio_stream_player.play()
+
+## ステータスを保存する
+func save_game():
+	var save_file = FileAccess.open(SAVE_DATA_PATH, FileAccess.WRITE)
+	var save_data = {
+		"level": _level
+	}
+	var s = var_to_str(save_data)
+	save_file.store_string(s)
+	save_file.close()
+
+## ステータスを読み込む
+func load_game():
+	if not FileAccess.file_exists(SAVE_DATA_PATH):
+		_level = 0
+		return
+
+	var save_file = FileAccess.open(SAVE_DATA_PATH, FileAccess.READ)
+	var s = save_file.get_as_text()
+	var save_data = str_to_var(s)
+	_level = save_data["level"]
+	save_file.close()
 
 # ---------------------------------------
 # private functions.

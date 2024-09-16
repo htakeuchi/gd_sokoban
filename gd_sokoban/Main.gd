@@ -49,7 +49,7 @@ var _tile_front:TileMap
 func _ready() -> void:
 	DisplayServer.window_set_size(Vector2i(1480, 1000))
 	Common.set_audio_stream_player(_audio_steam_player)
-
+	Common.load_game()
 	# UIをいったん非表示にする.
 	_ui_caption.visible = false
 	_ui_step.visible = true
@@ -211,6 +211,7 @@ func _clear_level_data():
 func _setup_level():
 	_clear_level_data()
 	var level = Common.get_level()
+
 	Field.setup(_tile_front)
 	_ui_level.text = "ステージ: %d"%level
 
