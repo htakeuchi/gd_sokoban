@@ -11,9 +11,9 @@ const Point2 = preload("res://src/common/Point2.gd")
 # const.
 # ---------------------------------------
 # 最初のレベル.
-const FIRST_LEVEL = 1
+const FIRST_LEVEL = 0
 # 最終レベル.
-const FINAL_LEVEL = 3
+const FINAL_LEVEL = 106
 
 # ---------------------------------------
 # class.
@@ -125,13 +125,6 @@ func is_final_level() -> bool:
 ## 現在のレベル番号を取得する.
 func get_level() -> int:
 	return _level
-## レベルシーンのパスを取得する.
-func get_level_scene(level:int=0) -> String:
-	if level <= 0:
-		# 指定がない場合は現在のレベルを使用する.
-		level = _level
-	
-	return "res://src/level/level%02d.tscn"%level
 
 ## セットアップ.
 func setup(player, layers):

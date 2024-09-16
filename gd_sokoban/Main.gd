@@ -9,8 +9,6 @@ extends Node2D
 const Point2 = preload("res://src/common/Point2.gd")
 const PlayerObj = preload("res://src/player/Player.tscn")
 const CrateObj = preload("res://src/crate/Crate.tscn")
-const BlockObj = preload("res://src/Block.tscn")
-const GoalObj = preload("res://src/Goal.tscn")
 
 # ---------------------------------------
 # const.
@@ -26,11 +24,11 @@ enum eState {
 # onready.
 # ---------------------------------------
 @onready var _player:Player = null
-@onready var _ui_caption = $UILayer/LabelCaption
-@onready var _ui_step = $UILayer/LabelStep
-@onready var _ui_reset = $UILayer/ResetButton
-@onready var _ui_undo = $UILayer/UndoButton
-@onready var _ui_redo = $UILayer/RedoButton
+@onready var _ui_caption = $UILayer/Control/LabelCaption
+@onready var _ui_step = $UILayer/Control/LabelStep
+@onready var _ui_reset = $UILayer/Control/ResetButton
+@onready var _ui_undo = $UILayer/Control/UndoButton
+@onready var _ui_redo = $UILayer/Control/RedoButton
 # キャンバスレイヤー.
 @onready var _tile_layer = $TileLayer
 @onready var _obj_layer = $ObjLayer
@@ -42,6 +40,7 @@ enum eState {
 # ---------------------------------------
 var _timer = 0.0 # タイマー.
 var _state = eState.MAIN # 状態.
+var _tile_front:TileMap 
 
 # ---------------------------------------
 # private functions.
@@ -53,56 +52,19 @@ func _ready() -> void:
 	# UIをいったん非表示にする.
 	_ui_caption.visible = false
 	_ui_step.visible = false
-	_ui_undo.visible = false
-	_ui_redo.visible = false
-	
+	_ui_undo.disabled = true
+	_ui_redo.disabled = true
+
 	# レベルを読み込む.
-	var level_path = Common.get_level_scene()
-	var level_res = load(level_path)
+	var level_res = load("res://src/level/level_template.tscn")
 	var level_obj = level_res.instantiate()
 	_tile_layer.add_child(level_obj)
 	# Frontのタイルマップを取得する.
-	var tile_front:TileMap = level_obj.get_node("./Front")
+	_tile_front = level_obj.get_node("./Front")
 	
 	# フィールドをセットアップする.
-	Field.setup(tile_front)
-	var file_path = "res://level/001.json"
-	if FileAccess.file_exists(file_path):
-		var file = FileAccess.open(file_path, FileAccess.READ)
-		var json_data = JSON.parse_string(file.get_as_text())
-		file.close()
+	_setup_level()
 
-		var rows = json_data.get("rows", 0)
-		var columns = json_data.get("columns", 0)
-		var level_data = json_data.get("level", [])
-		var x_offset = int((Field.TILE_WIDTH - columns) / 2)
-		var y_offset = int((Field.TILE_HEIGHT - rows) / 2)
-		
-		for y in range(rows):
-			for x in range(columns):
-				var field_type = null
-				match level_data[y][x]:
-					"wall":
-						field_type = Field.eTile.BLOCK
-#						var block =  BlockObj.instantiate()
-#						block.set_pos(x + x_offset, y + y_offset, true)
-#						_obj_layer.add_child(block)
-					"floor":
-						field_type = Field.eTile.BLANK
-					"goal":
-						field_type = Field.eTile.POINT1
-#						var goal =  GoalObj.instantiate()
-#						goal.set_pos(x + x_offset, y + y_offset, true)
-#						_obj_layer.add_child(goal)
-					"player":
-						field_type = Field.eTile.START
-					"box":
-						field_type = Field.eTile.CRATE1
-				tile_front.set_cell(0, Vector2i(x + x_offset, y + y_offset), field_type, Vector2i(0, 0))
-				if _create_obj(x + x_offset, y + y_offset, field_type):
-					tile_front.set_cell(0, Vector2i(x + x_offset, y + y_offset), Field.eTile.NONE)
-
-	
 	# スタート地点が未設定の場合はランダムな位置にプレイヤーを出現させる.
 	if _player == null:
 		push_warning("プレイヤーの開始位置が設定されていません.")
@@ -172,8 +134,8 @@ func _update_main(delta:float) -> void:
 	# ステージクリアしたかどうか.
 	if Field.is_stage_clear():
 		# ボアンを消す.
-		_ui_redo.visible = false
-		_ui_undo.visible = false
+		_ui_redo.disabled = true
+		_ui_undo.disabled = true
 		_ui_reset.visible = false
 		_state = eState.STAGE_CLEAR
 		Common.play_sound("clear")
@@ -182,7 +144,7 @@ func _update_main(delta:float) -> void:
 func _update_stage_clear() -> void:
 	# キャプションを表示する.
 	_ui_caption.visible = true
-	_ui_caption.text = "COMPLETED"
+	_ui_caption.text = "STAGE CLEAR!"
 
 	if Common.is_final_level():
 		_ui_caption.text = "ALL LEVELS COMPLETED!"
@@ -200,11 +162,11 @@ func _update_ui(_delta:float) -> void:
 	_ui_step.visible = false
 	var cnt_undo = Common.count_undo()
 	if cnt_undo > 0:	
-		_ui_undo.visible = true
+		_ui_undo.disabled = false
 		_ui_step.visible = true
 		_ui_step.text = "STEP:%d"%cnt_undo
 	else:
-		_ui_undo.visible = false
+		_ui_undo.disabled = true
 	
 	if _DEBUG_UNDO_LOG:
 		# 履歴をデバッグ用表示.
@@ -217,9 +179,9 @@ func _update_ui(_delta:float) -> void:
 			_ui_step.text += buf
 	
 	if Common.count_redo() > 0:
-		_ui_redo.visible = true
+		_ui_redo.disabled = false
 	else:
-		_ui_redo.visible = false
+		_ui_redo.disabled = true
 		
 ## リセットボタンをクリック.
 func _on_ResetButton_pressed() -> void:
@@ -238,3 +200,43 @@ func _on_undo_button_pressed():
 	if _state == eState.MAIN:
 		# undoを実行する.
 		Common.undo()
+
+func _clear_level_data():
+	for y in range(Field.TILE_HEIGHT ):
+		for x in range(Field.TILE_WIDTH):	
+			_tile_front.set_cell(0, Vector2i(x, y), Field.eTile.NONE)
+
+# フィールドをセットアップする.
+func _setup_level():
+	_clear_level_data()
+	var level = Common.get_level()
+	Field.setup(_tile_front)
+	var file_path = "res://level/%03d.json" % level
+	if FileAccess.file_exists(file_path):
+		var file = FileAccess.open(file_path, FileAccess.READ)
+		var json_data = JSON.parse_string(file.get_as_text())
+		file.close()
+
+		var rows = json_data.get("rows", 0)
+		var columns = json_data.get("columns", 0)
+		var level_data = json_data.get("level", [])
+		var x_offset = int((Field.TILE_WIDTH - columns) / 2)
+		var y_offset = int((Field.TILE_HEIGHT - rows) / 2)
+		
+		for y in range(rows):
+			for x in range(columns):
+				var field_type = null
+				match level_data[y][x]:
+					"wall":
+						field_type = Field.eTile.BLOCK
+					"floor":
+						field_type = Field.eTile.BLANK
+					"goal":
+						field_type = Field.eTile.POINT1
+					"player":
+						field_type = Field.eTile.START
+					"box":
+						field_type = Field.eTile.CRATE1
+				_tile_front.set_cell(0, Vector2i(x + x_offset, y + y_offset), field_type, Vector2i(0, 0))
+				if _create_obj(x + x_offset, y + y_offset, field_type):
+					_tile_front.set_cell(0, Vector2i(x + x_offset, y + y_offset), Field.eTile.NONE)
