@@ -39,7 +39,7 @@ Button/styles/hover = SubResource("StyleBoxFlat_v2gqo")
 Button/styles/normal = SubResource("StyleBoxFlat_ksgw8")
 
 [node name="Main" type="Node2D"]
-position = Vector2(8, 0)
+position = Vector2(23.7405, 0)
 script = ExtResource("1")
 
 [node name="TileLayer" type="CanvasLayer" parent="."]
@@ -56,29 +56,49 @@ anchors_preset = 0
 offset_right = 48.0
 offset_bottom = 64.0
 theme = SubResource("Theme_ef8nn")
+metadata/_edit_use_anchors_ = true
 
 [node name="LabelCaption" type="Label" parent="UILayer/Control"]
+layout_mode = 0
 offset_top = 376.0
 offset_right = 1472.0
 offset_bottom = 609.0
-theme_override_colors/font_color = Color(0.446584, 0.621007, 0.998212, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 0.768627)
 theme_override_font_sizes/font_size = 200
 text = "STAGE CLEAR"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="LabelStep" type="Label" parent="UILayer/Control"]
-offset_left = 656.0
+z_index = 10
+layout_mode = 0
+offset_left = 760.0
 offset_top = 16.0
-offset_right = 752.0
-offset_bottom = 45.0
-text = "STEP:0"
+offset_right = 882.0
+offset_bottom = 48.0
+theme_override_fonts/font = ExtResource("2_bvpxy")
+theme_override_font_sizes/font_size = 27
+text = "歩数: 0"
+horizontal_alignment = 2
+
+[node name="LabelLevel" type="Label" parent="UILayer/Control"]
+z_index = 10
+layout_mode = 0
+offset_left = 552.0
+offset_top = 16.0
+offset_right = 701.0
+offset_bottom = 48.0
+theme_override_fonts/font = ExtResource("2_bvpxy")
+theme_override_font_sizes/font_size = 27
+text = "ステージ: 1"
+horizontal_alignment = 2
 
 [node name="ResetButton" type="Button" parent="UILayer/Control"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.00540541
-anchor_right = 0.00540541
+anchor_left = 0.333333
+anchor_right = 0.333333
+anchor_bottom = 0.09375
 offset_left = 128.0
 offset_top = 8.0
 offset_right = 252.0
@@ -87,24 +107,28 @@ text = "ギブアップ"
 metadata/_edit_use_anchors_ = true
 
 [node name="UndoButton" type="Button" parent="UILayer/Control"]
+layout_mode = 0
 offset_left = 1216.0
 offset_top = 8.0
 offset_right = 1336.0
-offset_bottom = 42.0
+offset_bottom = 48.0
 text = "戻す"
 
 [node name="RedoButton" type="Button" parent="UILayer/Control"]
+layout_mode = 0
 offset_left = 1344.0
 offset_top = 8.0
 offset_right = 1464.0
-offset_bottom = 42.0
+offset_bottom = 48.0
 text = "進める"
 
 [node name="MenuButton" type="Button" parent="UILayer/Control"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.00540541
-anchor_right = 0.00540541
+anchor_left = 0.333333
+anchor_top = 0.015625
+anchor_right = 0.333333
+anchor_bottom = 0.15625
 offset_top = 8.0
 offset_right = 125.0
 offset_bottom = 39.0

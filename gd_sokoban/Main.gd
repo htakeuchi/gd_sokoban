@@ -26,6 +26,7 @@ enum eState {
 @onready var _player:Player = null
 @onready var _ui_caption = $UILayer/Control/LabelCaption
 @onready var _ui_step = $UILayer/Control/LabelStep
+@onready var _ui_level = $UILayer/Control/LabelLevel
 @onready var _ui_reset = $UILayer/Control/ResetButton
 @onready var _ui_undo = $UILayer/Control/UndoButton
 @onready var _ui_redo = $UILayer/Control/RedoButton
@@ -51,7 +52,7 @@ func _ready() -> void:
 
 	# UIをいったん非表示にする.
 	_ui_caption.visible = false
-	_ui_step.visible = false
+	_ui_step.visible = true
 	_ui_undo.disabled = true
 	_ui_redo.disabled = true
 
@@ -159,12 +160,12 @@ func _update_stage_clear() -> void:
 
 ## 更新 > UI
 func _update_ui(_delta:float) -> void:
-	_ui_step.visible = false
+	#_ui_step.visible = false
 	var cnt_undo = Common.count_undo()
 	if cnt_undo > 0:	
 		_ui_undo.disabled = false
-		_ui_step.visible = true
-		_ui_step.text = "STEP:%d"%cnt_undo
+		#_ui_step.visible = true
+		_ui_step.text = "歩数: %d"%cnt_undo
 	else:
 		_ui_undo.disabled = true
 	
@@ -211,6 +212,8 @@ func _setup_level():
 	_clear_level_data()
 	var level = Common.get_level()
 	Field.setup(_tile_front)
+	_ui_level.text = "ステージ: %d"%level
+
 	var file_path = "res://level/%03d.json" % level
 	if FileAccess.file_exists(file_path):
 		var file = FileAccess.open(file_path, FileAccess.READ)
